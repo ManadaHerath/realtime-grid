@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Realtime Grid Demo</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1>Realtime Seat Grid Demo</h1>
+      <p>Backed by Go + Redis + WebSockets</p>
+    </header>
+
+    <section class="controls">
+      <div class="control-group">
+        <label>
+          Rows:
+          <input id="rowsInput" type="number" value="100" min="1" max="200" />
+        </label>
+        <label>
+          Columns:
+          <input id="colsInput" type="number" value="100" min="1" max="200" />
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label>
+          Your name:
+          <input id="userNameInput" type="text" placeholder="e.g. Alice" />
+        </label>
+        <button id="createGridBtn">Create New Grid</button>
+      </div>
+
+      <!-- NEW: connect to existing grid -->
+      <div class="control-group">
+        <label>
+          Existing Grid ID:
+          <input id="gridIdInput" type="text" placeholder="paste grid id to join" />
+        </label>
+        <button id="connectGridBtn">Connect to Grid</button>
+      </div>
+
+      <div class="status-bar">
+        <span id="gridIdLabel">Grid ID: <em>none</em></span>
+        <span id="connectionStatus" class="status status-disconnected">Disconnected</span>
+      </div>
+    </section>
+
+    <section class="legend">
+      <span class="legend-item">
+        <span class="cell-sample cell-free"></span> Free
+      </span>
+      <span class="legend-item">
+        <span class="cell-sample cell-held-me"></span> Held by you
+      </span>
+      <span class="legend-item">
+        <span class="cell-sample cell-held-other"></span> Held by others
+      </span>
+    </section>
+
+    <section class="grid-wrapper">
+      <div id="gridContainer" class="grid-container">
+        <!-- cells will be injected here -->
+      </div>
+    </section>
+
+    <section class="log-panel">
+      <h2>Event Log</h2>
+      <div id="log" class="log"></div>
+    </section>
+  </div>
+
+  <script type="module" src="demo.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "@mando/realtime-grid-client",
+  "version": "0.1.0",
+  "description": "Real-time N-dimensional grid client for theatre / seat / booking systems",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "realtime",
+    "grid",
+    "redis",
+    "booking",
+    "seats"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^22.0.0"
+  }
+}

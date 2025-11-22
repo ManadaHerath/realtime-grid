@@ -5,26 +5,61 @@ import (
 	"sync"
 )
 
+// Common errors used by any store implementation.
 var (
 	ErrGridNotFound      = errors.New("grid not found")
 	ErrDimensionMismatch = errors.New("coord dimension mismatch")
 	ErrOutOfBounds       = errors.New("coord out of bounds")
+	ErrCellAlreadySet    = errors.New("cell already set") // for claim-like semantics
 )
 
-// Store is a simple in-memory grid store (later replaced with Redis).
-type Store struct {
+// Store is the interface both MemStore and RedisStore will implement.
+type Store interface {
+    CreateGrid(dimensions []int, defaultVal interface{}) (*Grid, error)
+    GetGrid(id string) (*Grid, error)
+    SetCell(gridID string, coord []int, value interface{}) error
+    ListCells(gridID string) ([]CellView, error)
+    ReleaseCell(gridID string, coord []int) error // NEW
+}
+
+// ===== In-memory implementation (MemStore) =====
+
+type MemStore struct {
 	mu    sync.RWMutex
 	grids map[string]*Grid
 }
 
-func NewStore() *Store {
-	return &Store{
+func NewMemStore() Store {
+	return &MemStore{
 		grids: make(map[string]*Grid),
 	}
 }
 
-// CreateGrid creates a new grid with given dimensions & default value.
-func (s *Store) CreateGrid(dimensions []int, defaultVal interface{}) (*Grid, error) {
+func (s *MemStore) ReleaseCell(gridID string, coord []int) error {
+    s.mu.Lock()
+    defer s.mu.Unlock()
+
+    g, ok := s.grids[gridID]
+    if !ok {
+        return ErrGridNotFound
+    }
+
+    if len(coord) != len(g.Dimensions) {
+        return ErrDimensionMismatch
+    }
+
+    for i, c := range coord {
+        if c < 0 || c >= g.Dimensions[i] {
+            return ErrOutOfBounds
+        }
+    }
+
+    key := CoordKey(coord)
+    delete(g.Cells, key)
+    return nil
+}
+
+func (s *MemStore) CreateGrid(dimensions []int, defaultVal interface{}) (*Grid, error) {
 	if len(dimensions) == 0 {
 		return nil, errors.New("dimensions required")
 	}
@@ -48,7 +83,7 @@ func (s *Store) CreateGrid(dimensions []int, defaultVal interface{}) (*Grid, err
 }
 
 // GetGrid returns a grid by ID.
-func (s *Store) GetGrid(id string) (*Grid, error) {
+func (s *MemStore) GetGrid(id string) (*Grid, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
@@ -59,8 +94,9 @@ func (s *Store) GetGrid(id string) (*Grid, error) {
 	return g, nil
 }
 
-// SetCell sets a value for a coord (for now: last write wins).
-func (s *Store) SetCell(gridID string, coord []int, value interface{}) error {
+// SetCell sets a value for a coord.
+// We now treat this like a "claim": if a value is already set, we error.
+func (s *MemStore) SetCell(gridID string, coord []int, value interface{}) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -81,12 +117,17 @@ func (s *Store) SetCell(gridID string, coord []int, value interface{}) error {
 	}
 
 	key := CoordKey(coord)
+
+	if _, exists := g.Cells[key]; exists {
+		return ErrCellAlreadySet
+	}
+
 	g.Cells[key] = value
 	return nil
 }
 
 // ListCells returns all cells that have explicit values set.
-func (s *Store) ListCells(gridID string) ([]CellView, error) {
+func (s *MemStore) ListCells(gridID string) ([]CellView, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
