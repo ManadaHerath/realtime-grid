@@ -5,18 +5,18 @@
 ### 2D Real-Time Multi-Client Example
 Three clients interacting with the same 2D grid simultaneously.
 
-<table align="center">
+<table align="center" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse;">
   <tr>
     <td align="center">
-      <img src="./demo/screenshots/client_1.png" alt="2D Client 1" width="300%" /><br/>
+      <img src="./demo/screenshots/client_1.png" alt="2D Client 1" width="300px"/><br/>
       Client 1
     </td>
     <td align="center">
-      <img src="./demo/screenshots/client_2.png" alt="2D Client 2" width="300%" /><br/>
+      <img src="./demo/screenshots/client_2.png" alt="2D Client 2" width="300px"/><br/>
       Client 2
     </td>
     <td align="center">
-      <img src="./demo/screenshots/client_3.jpeg" alt="2D Client 3" width="300%"/><br/>
+      <img src="./demo/screenshots/client_3.jpeg" alt="2D Client 3" width="300px"/><br/>
       Client 3
     </td>
   </tr>
@@ -24,12 +24,11 @@ Three clients interacting with the same 2D grid simultaneously.
 
 Code : [Demo-2D](./demo)
 
----
 
 ### 3D 100×100×100 Space Grid Example
 A 3D voxel grid rendered with React Three Fiber, showing real-time cell claiming.
 
-<table align="center">
+<table align="center" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse;">
   <tr>
     <td align="center">
       <img src="./grid-3d-demo/screenshots/client_1.png" alt="3D Client 1" width="250px"/><br/>
