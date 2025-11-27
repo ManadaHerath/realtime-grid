@@ -1,6 +1,5 @@
 export function createGridClient(options) {
     const { baseUrl, gridId } = options;
-    // Normalize base URL (remove trailing slash)
     const normalizedBase = baseUrl.replace(/\/+$/, "");
     const httpBase = normalizedBase;
     const wsBase = normalizedBase.replace(/^http/, "ws");
@@ -22,7 +21,6 @@ export function createGridClient(options) {
             throw new Error(`Failed to get grid: ${res.status} ${res.statusText}`);
         }
         const data = await res.json();
-        // Normalize cells to { coord, value }
         const cells = (data.cells || []).map((c) => ({
             coord: c.coord,
             value: c.value,
@@ -74,7 +72,6 @@ export function createGridClient(options) {
             }
         };
         ws.onclose = () => {
-            // In future you could add auto-reconnect here.
             ws = null;
         };
     }

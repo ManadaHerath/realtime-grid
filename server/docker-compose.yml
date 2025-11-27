@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis-grid
+    ports:
+      - "6379:6379"
+
+  api:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: realtime-grid-api
+    environment:
+      REDIS_ADDR: "redis:6379"
+      REDIS_PASSWORD: ""
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis

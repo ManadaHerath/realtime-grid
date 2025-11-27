@@ -25,14 +25,6 @@ export interface GridClientOptions {
     gridId: string;
     userId?: string;
 }
-/**
- * Simple real-time grid client.
- *
- * - getInitialState(): fetch initial grid state
- * - connect(): open WebSocket and listen for updates
- * - claim(): attempt to set/claim a cell value
- * - onCellUpdate(): subscribe to real-time updates
- */
 export interface GridClient {
     getInitialState(): Promise<GridState>;
     connect(): Promise<void>;

@@ -1,4 +1,4 @@
-import { createGridClient } from "../client/dist/index.js"; // ESM build
+import { createGridClient } from "../client/dist/index.js";
 
 const baseUrl = "http://localhost:8080";
 
@@ -21,7 +21,6 @@ let gridId = null;
 let client = null;
 let dimensions = [0, 0];
 let userId = `user_${Math.random().toString(16).slice(2)}`;
-// coordKey -> value
 const cellState = new Map();
 
 function log(message) {
@@ -109,9 +108,9 @@ async function handleCellClick(r, c) {
   if (typeof current === "string" && current.startsWith("held:") && current.slice("held:".length) === userId) {
     const result = await client.release([r, c]);
     if (!result.success) {
-      log(`⚠️ Failed to release (${r}, ${c}): ${result.error || "error"}`);
+      log(`Failed to release (${r}, ${c}): ${result.error || "error"}`);
     } else {
-      log(`🔓 Released (${r}, ${c})`);
+      log(`Released (${r}, ${c})`);
       cellState.delete(key);
       updateCellClass(r, c);
     }
@@ -166,9 +165,6 @@ function handleRealtimeUpdate(ev) {
   }
 }
 
-/**
- * Core helper: set up client for an existing grid ID.
- */
 async function setupClientForGrid(targetGridId) {
   if (!targetGridId) {
     log("No grid ID provided.");
@@ -189,7 +185,7 @@ async function setupClientForGrid(targetGridId) {
   });
 
   setConnected(false);
-  log(`🔄 Loading grid ${gridId} ...`);
+  log(`Loading grid ${gridId} ...`);
 
   const state = await client.getInitialState();
   applyInitialState(state);
@@ -202,9 +198,6 @@ async function setupClientForGrid(targetGridId) {
   log(`Connected to grid ${gridId}`);
 }
 
-/**
- * Create a new grid via API, then setup client for it.
- */
 async function createGrid() {
   const rows = parseInt(rowsInput.value, 10) || 100;
   const cols = parseInt(colsInput.value, 10) || 100;

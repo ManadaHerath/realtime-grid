@@ -1,7 +1,7 @@
 {
-  "name": "@mando/realtime-grid-client",
-  "version": "0.1.0",
-  "description": "Real-time N-dimensional grid client for theatre / seat / booking systems",
+  "name": "realtime-grid-client",
+  "version": "0.1.3",
+  "description": "A simple client library for a real-time, N-dimensional grid state engine with atomic coordination, concurrent claims, and WebSocket-based event streaming.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
