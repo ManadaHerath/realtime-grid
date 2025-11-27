@@ -27,7 +27,7 @@ npm install realtime-grid-client
 This client expects a compatible Realtime Grid Server.
 
 **Reference implementation (Go + Redis):**  
-📦 [GitHub Repository](https://github.com/ManadaHerath/realtime-grid/tree/main/server)
+[GitHub Repository](https://github.com/ManadaHerath/realtime-grid/tree/main/server)
 
 The server README includes instructions for:
 - Running locally with Go and Redis
