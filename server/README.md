@@ -256,12 +256,4 @@ async function main() {
 
   await client.claim([1, 2], "held:user1");
 }
-
-main();
 ```
-
----
-
-## License
-
-MIT
