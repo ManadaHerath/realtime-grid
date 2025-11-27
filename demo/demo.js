@@ -17,7 +17,6 @@ const logEl = document.getElementById("log");
 
 console.log("Demo script loaded");
 
-// Local state
 let gridId = null;
 let client = null;
 let dimensions = [0, 0];
@@ -25,9 +24,6 @@ let userId = `user_${Math.random().toString(16).slice(2)}`;
 // coordKey -> value
 const cellState = new Map();
 
-/**
- * Logging helper.
- */
 function log(message) {
   const line = document.createElement("div");
   line.className = "log-line";
@@ -36,18 +32,12 @@ function log(message) {
   logEl.prepend(line);
 }
 
-/**
- * Update connection status UI.
- */
 function setConnected(isConnected) {
   connectionStatus.textContent = isConnected ? "Connected" : "Disconnected";
   connectionStatus.classList.toggle("status-connected", isConnected);
   connectionStatus.classList.toggle("status-disconnected", !isConnected);
 }
 
-/**
- * Create grid cells DOM.
- */
 function renderGrid(rows, cols) {
   gridContainer.innerHTML = "";
   gridContainer.style.setProperty("--cols", String(cols));
@@ -67,16 +57,12 @@ function renderGrid(rows, cols) {
   }
 }
 
-/**
- * Get key for coord.
- */
+
 function coordKey(r, c) {
   return `${r}:${c}`;
 }
 
-/**
- * Update one cell's visual class based on state.
- */
+
 function updateCellClass(r, c) {
   const key = coordKey(r, c);
   const value = cellState.get(key) || null;
@@ -99,35 +85,27 @@ function updateCellClass(r, c) {
     }
     return;
   }
-
-  // Default: treat as other
   cell.classList.add("cell-held-other");
 }
 
-/**
- * Handle click on a cell: toggle free <-> held by me.
- */
 async function handleCellClick(r, c) {
   if (!client || !gridId) return;
   const key = coordKey(r, c);
   const current = cellState.get(key) || null;
 
-  // If free: try to claim
   if (!current) {
     const value = `held:${userId}`;
     const result = await client.claim([r, c], value);
     if (!result.success) {
-      log(`⚠️ Failed to claim (${r}, ${c}): ${result.error || "conflict"}`);
+      log(`Failed to claim (${r}, ${c}): ${result.error || "conflict"}`);
     } else {
-      log(`✅ Claimed (${r}, ${c})`);
-      // Optimistic local update (WS will also send event)
+      log(`Claimed (${r}, ${c})`);
       cellState.set(key, value);
       updateCellClass(r, c);
     }
     return;
   }
 
-  // If held by me: release
   if (typeof current === "string" && current.startsWith("held:") && current.slice("held:".length) === userId) {
     const result = await client.release([r, c]);
     if (!result.success) {
@@ -140,13 +118,10 @@ async function handleCellClick(r, c) {
     return;
   }
 
-  // Held by someone else
-  log(`⛔ Cell (${r}, ${c}) is held by another user.`);
+  log(`Cell (${r}, ${c}) is held by another user.`);
 }
 
-/**
- * Apply initial state from server.
- */
+
 function applyInitialState(state) {
   dimensions = state.dimensions;
   cellState.clear();
@@ -167,12 +142,10 @@ function applyInitialState(state) {
   }
 }
 
-/**
- * Handle real-time events from WS.
- */
+
 function handleRealtimeUpdate(ev) {
   if (ev.type === "hello") {
-    log("👋 Connected to grid " + ev.gridId);
+    log("Connected to grid " + ev.gridId);
     setConnected(true);
     return;
   }
@@ -185,11 +158,11 @@ function handleRealtimeUpdate(ev) {
   if (ev.type === "cell_claimed") {
     cellState.set(key, ev.value);
     updateCellClass(r, c);
-    log(`📌 Seat (${r}, ${c}) claimed (${String(ev.value)})`);
+    log(`Seat (${r}, ${c}) claimed (${String(ev.value)})`);
   } else if (ev.type === "cell_released") {
     cellState.delete(key);
     updateCellClass(r, c);
-    log(`🧹 Seat (${r}, ${c}) released`);
+    log(`Seat (${r}, ${c}) released`);
   }
 }
 
@@ -198,7 +171,7 @@ function handleRealtimeUpdate(ev) {
  */
 async function setupClientForGrid(targetGridId) {
   if (!targetGridId) {
-    log("⚠️ No grid ID provided.");
+    log("No grid ID provided.");
     return;
   }
 
@@ -206,7 +179,6 @@ async function setupClientForGrid(targetGridId) {
   gridIdLabel.innerHTML = `Grid ID: <code>${gridId}</code>`;
   gridIdInput.value = gridId;
 
-  // Disconnect previous client if any
   if (client) {
     client.disconnect();
   }
@@ -227,7 +199,7 @@ async function setupClientForGrid(targetGridId) {
 
   client.onCellUpdate(handleRealtimeUpdate);
 
-  log(`✅ Connected to grid ${gridId}`);
+  log(`Connected to grid ${gridId}`);
 }
 
 /**
@@ -255,23 +227,20 @@ async function createGrid() {
   });
 
   if (!res.ok) {
-    log(`❌ Failed to create grid: HTTP ${res.status}`);
+    log(`Failed to create grid: HTTP ${res.status}`);
     return;
   }
 
   const data = await res.json();
   const newGridId = data.id;
-  log(`✅ Created grid ${newGridId}`);
+  log(`Created grid ${newGridId}`);
 
-  // Fill the input so you can copy it or connect to it from another tab
   gridIdInput.value = newGridId;
 
   await setupClientForGrid(newGridId);
 }
 
-/**
- * Connect to existing grid (user has pasted or typed the ID).
- */
+
 async function connectToExistingGrid() {
   const userName = userNameInput.value.trim();
   if (userName) {
@@ -280,7 +249,7 @@ async function connectToExistingGrid() {
 
   const existingId = gridIdInput.value.trim();
   if (!existingId) {
-    log("⚠️ Please enter a grid ID to connect.");
+    log("Please enter a grid ID to connect.");
     return;
   }
 
@@ -288,16 +257,15 @@ async function connectToExistingGrid() {
     await setupClientForGrid(existingId);
   } catch (err) {
     console.error(err);
-    log(`❌ Error connecting: ${err.message}`);
+    log(`Error connecting: ${err.message}`);
   }
 }
 
-// Wire up buttons
 createGridBtn.addEventListener("click", () => {
   console.log("Create Grid button clicked");
   createGrid().catch((err) => {
     console.error(err);
-    log(`❌ Error: ${err.message}`);
+    log(`Error: ${err.message}`);
   });
 });
 
@@ -305,11 +273,10 @@ connectGridBtn.addEventListener("click", () => {
   console.log("Connect to Grid button clicked");
   connectToExistingGrid().catch((err) => {
     console.error(err);
-    log(`❌ Error: ${err.message}`);
+    log(`Error: ${err.message}`);
   });
 });
 
-// Try to clean up on tab close
 window.addEventListener("beforeunload", () => {
   if (client) {
     client.disconnect();

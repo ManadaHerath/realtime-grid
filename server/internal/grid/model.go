@@ -11,7 +11,7 @@ type Grid struct {
 	ID         string                 `json:"id"`
 	Dimensions []int                  `json:"dimensions"`
 	DefaultVal interface{}            `json:"defaultValue,omitempty"`
-	Cells      map[string]interface{} `json:"-"` // coordKey -> value
+	Cells      map[string]interface{} `json:"-"` 
 }
 
 type CellView struct {

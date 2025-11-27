@@ -16,10 +16,8 @@ func main() {
 	redisPass := getenv("REDIS_PASSWORD", "")
 	redisDB := 0
 
-	// Store (Redis-backed)
 	store := grid.NewRedisStore(redisAddr, redisPass, redisDB)
 
-	// Redis client for Pub/Sub
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
 		Password: redisPass,
@@ -46,7 +44,6 @@ func getenv(key, def string) string {
 	return def
 }
 
-// CORS middleware so frontend at :3000 can call API at :8080
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")

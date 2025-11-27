@@ -5,24 +5,19 @@ import (
 	"sync"
 )
 
-// Common errors used by any store implementation.
 var (
 	ErrGridNotFound      = errors.New("grid not found")
 	ErrDimensionMismatch = errors.New("coord dimension mismatch")
 	ErrOutOfBounds       = errors.New("coord out of bounds")
-	ErrCellAlreadySet    = errors.New("cell already set") // for claim-like semantics
+	ErrCellAlreadySet    = errors.New("cell already set") 
 )
-
-// Store is the interface both MemStore and RedisStore will implement.
 type Store interface {
     CreateGrid(dimensions []int, defaultVal interface{}) (*Grid, error)
     GetGrid(id string) (*Grid, error)
     SetCell(gridID string, coord []int, value interface{}) error
     ListCells(gridID string) ([]CellView, error)
-    ReleaseCell(gridID string, coord []int) error // NEW
+    ReleaseCell(gridID string, coord []int) error 
 }
-
-// ===== In-memory implementation (MemStore) =====
 
 type MemStore struct {
 	mu    sync.RWMutex
@@ -82,7 +77,6 @@ func (s *MemStore) CreateGrid(dimensions []int, defaultVal interface{}) (*Grid, 
 	return g, nil
 }
 
-// GetGrid returns a grid by ID.
 func (s *MemStore) GetGrid(id string) (*Grid, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -94,8 +88,6 @@ func (s *MemStore) GetGrid(id string) (*Grid, error) {
 	return g, nil
 }
 
-// SetCell sets a value for a coord.
-// We now treat this like a "claim": if a value is already set, we error.
 func (s *MemStore) SetCell(gridID string, coord []int, value interface{}) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -109,7 +101,7 @@ func (s *MemStore) SetCell(gridID string, coord []int, value interface{}) error 
 		return ErrDimensionMismatch
 	}
 
-	// Bounds check
+
 	for i, c := range coord {
 		if c < 0 || c >= g.Dimensions[i] {
 			return ErrOutOfBounds
@@ -126,7 +118,6 @@ func (s *MemStore) SetCell(gridID string, coord []int, value interface{}) error 
 	return nil
 }
 
-// ListCells returns all cells that have explicit values set.
 func (s *MemStore) ListCells(gridID string) ([]CellView, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()

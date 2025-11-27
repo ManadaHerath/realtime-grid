@@ -46,20 +46,17 @@ func (s *RedisStore) CreateGrid(dimensions []int, defaultVal interface{}) (*Grid
 		ID:         GenerateID(),
 		Dimensions: dimensions,
 		DefaultVal: defaultVal,
-		Cells:      nil, // we don't keep all cells in memory here
+		Cells:      nil,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	// Encode dimensions as comma-separated: "10,20,3"
 	dimParts := make([]string, len(dimensions))
 	for i, d := range dimensions {
 		dimParts[i] = fmt.Sprintf("%d", d)
 	}
 	dimStr := strings.Join(dimParts, ",")
-
-	// defaultVal as JSON string (so it can be anything)
 	var defStr string
 	if defaultVal != nil {
 		b, err := json.Marshal(defaultVal)
@@ -81,7 +78,6 @@ func (s *RedisStore) CreateGrid(dimensions []int, defaultVal interface{}) (*Grid
 	return g, nil
 }
 
-// GetGrid loads grid meta from Redis.
 func (s *RedisStore) GetGrid(id string) (*Grid, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -116,7 +112,6 @@ func (s *RedisStore) GetGrid(id string) (*Grid, error) {
 	var defaultVal interface{}
 	if defStr, ok := vals["default"]; ok && defStr != "" {
 		if err := json.Unmarshal([]byte(defStr), &defaultVal); err != nil {
-			// not fatal, but log-worthy in real app
 			defaultVal = nil
 		}
 	}
@@ -128,10 +123,7 @@ func (s *RedisStore) GetGrid(id string) (*Grid, error) {
 	}, nil
 }
 
-// SetCell atomically sets the cell value IF it is not already set.
-// This enforces "only one successful claim per cell" across all clients.
 func (s *RedisStore) SetCell(gridID string, coord []int, value interface{}) error {
-	// First, we need the grid meta to do bounds checks.
 	g, err := s.GetGrid(gridID)
 	if err != nil {
 		return err
@@ -151,14 +143,11 @@ func (s *RedisStore) SetCell(gridID string, coord []int, value interface{}) erro
 	key := CoordKey(coord)
 	cKey := cellsKey(gridID)
 
-	// Value as JSON so we can support string/int/float/etc.
 	valBytes, err := json.Marshal(value)
 	if err != nil {
 		return err
 	}
 	valStr := string(valBytes)
-
-	// Use a Lua script for atomic "only if not exists" in the hash.
 	script := redis.NewScript(`
 local cKey = KEYS[1]
 local field = ARGV[1]
@@ -184,12 +173,10 @@ return 1
 	return nil
 }
 
-// ListCells returns all explicitly set cells.
 func (s *RedisStore) ListCells(gridID string) ([]CellView, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	// Check grid exists
 	_, err := s.GetGrid(gridID)
 	if err != nil {
 		return nil, err
@@ -209,7 +196,6 @@ func (s *RedisStore) ListCells(gridID string) ([]CellView, error) {
 
 		var val interface{}
 		if err := json.Unmarshal([]byte(v), &val); err != nil {
-			// if fail, keep raw string
 			val = v
 		}
 
@@ -222,7 +208,6 @@ func (s *RedisStore) ListCells(gridID string) ([]CellView, error) {
 }
 
 func (s *RedisStore) ReleaseCell(gridID string, coord []int) error {
-    // Get grid meta for bounds check
     g, err := s.GetGrid(gridID)
     if err != nil {
         return err
@@ -242,7 +227,6 @@ func (s *RedisStore) ReleaseCell(gridID string, coord []int) error {
     key := CoordKey(coord)
     cKey := cellsKey(gridID)
 
-    // Just delete the field. If it doesn't exist, that's fine.
     if err := s.client.HDel(ctx, cKey, key).Err(); err != nil {
         return err
     }

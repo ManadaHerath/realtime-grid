@@ -32,8 +32,6 @@ func parseJSON(r *http.Request, dst interface{}) error {
 	return json.NewDecoder(r.Body).Decode(dst)
 }
 
-// ===== Request/response DTOs =====
-
 type CreateGridRequest struct {
 	Dimensions []int       `json:"dimensions"`
 	DefaultVal interface{} `json:"defaultValue"`
@@ -105,7 +103,6 @@ func (api *API) publishCellUpdate(ctx context.Context, gridID string, coord []in
 	api.Redis.Publish(ctx, channel, data)
 }
 
-// POST /grids
 func (api *API) HandleCreateGrid(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		writeJSON(w, http.StatusMethodNotAllowed, map[string]string{"error": "method not allowed"})
@@ -131,7 +128,6 @@ func (api *API) HandleCreateGrid(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusCreated, resp)
 }
 
-// GET /grids/{id}
 func (api *API) HandleGetGrid(w http.ResponseWriter, r *http.Request, gridID string) {
 	if r.Method != http.MethodGet {
 		writeJSON(w, http.StatusMethodNotAllowed, map[string]string{"error": "method not allowed"})
@@ -163,7 +159,6 @@ func (api *API) HandleGetGrid(w http.ResponseWriter, r *http.Request, gridID str
 	writeJSON(w, http.StatusOK, resp)
 }
 
-// POST /grids/{id}/claim
 func (api *API) HandleClaimCell(w http.ResponseWriter, r *http.Request, gridID string) {
 	if r.Method != http.MethodPost {
 		writeJSON(w, http.StatusMethodNotAllowed, map[string]string{"error": "method not allowed"})
@@ -251,7 +246,6 @@ func (api *API) RegisterRoutes(mux *http.ServeMux) {
     })
 }
 
-// POST /grids/{id}/release
 func (api *API) HandleReleaseCell(w http.ResponseWriter, r *http.Request, gridID string) {
     if r.Method != http.MethodPost {
         writeJSON(w, http.StatusMethodNotAllowed, map[string]string{"error": "method not allowed"})

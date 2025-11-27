@@ -31,14 +31,6 @@ export interface GridClientOptions {
   userId?: string;
 }
 
-/**
- * Simple real-time grid client.
- *
- * - getInitialState(): fetch initial grid state
- * - connect(): open WebSocket and listen for updates
- * - claim(): attempt to set/claim a cell value
- * - onCellUpdate(): subscribe to real-time updates
- */
 export interface GridClient {
   getInitialState(): Promise<GridState>;
   connect(): Promise<void>;
@@ -52,7 +44,6 @@ export interface GridClient {
 export function createGridClient(options: GridClientOptions): GridClient {
   const { baseUrl, gridId } = options;
 
-  // Normalize base URL (remove trailing slash)
   const normalizedBase = baseUrl.replace(/\/+$/, "");
   const httpBase = normalizedBase;
   const wsBase = normalizedBase.replace(/^http/, "ws");
@@ -76,7 +67,6 @@ export function createGridClient(options: GridClientOptions): GridClient {
       throw new Error(`Failed to get grid: ${res.status} ${res.statusText}`);
     }
     const data = await res.json();
-    // Normalize cells to { coord, value }
     const cells: GridCell[] = (data.cells || []).map((c: any) => ({
       coord: c.coord,
       value: c.value,
@@ -134,7 +124,6 @@ export function createGridClient(options: GridClientOptions): GridClient {
     };
 
     ws.onclose = () => {
-      // In future you could add auto-reconnect here.
       ws = null;
     };
   }
