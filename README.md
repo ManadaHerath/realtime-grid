@@ -1,5 +1,13 @@
 # Realtime Grid Engine
 
+The Realtime Grid Engine is a Redis-backed, N-dimensional real-time coordination server with an accompanying JavaScript/TypeScript client library. It provides atomic cell claiming, deterministic conflict resolution, and WebSocket-based event distribution. The system is designed to operate independently from your main application logic and can be integrated into any application that needs reliable multi-user interaction on grid-like structures.
+
+This repository contains:
+
+- The **Realtime Grid Server** (Go + Redis)
+- The **Realtime Grid Client** (`realtime-grid-client` npm package)
+- Demos including a 2D reservation interface and a 3D sparse voxel visualization
+
 ## Demo Screenshots
 
 ### 2D Real-Time Multi-Client Example
@@ -46,15 +54,6 @@ A 3D voxel grid rendered with React Three Fiber, showing real-time cell claiming
 </table>
 
 Code : [Demo-3D](./grid-3d-demo)
-
-The Realtime Grid Engine is a Redis-backed, N-dimensional real-time coordination server with an accompanying JavaScript/TypeScript client library. It provides atomic cell claiming, deterministic conflict resolution, and WebSocket-based event distribution. The system is designed to operate independently from your main application logic and can be integrated into any application that needs reliable multi-user interaction on grid-like structures.
-
-This repository contains:
-
-- The **Realtime Grid Server** (Go + Redis)
-- The **Realtime Grid Client** (`realtime-grid-client` npm package)
-- Demos including a 2D reservation interface and a 3D sparse voxel visualization
-
 
 ## Motivation
 
