@@ -1,5 +1,53 @@
 # Realtime Grid Engine
 
+## Demo Screenshots
+
+### 2D Real-Time Multi-Client Example
+Three clients interacting with the same 2D grid simultaneously.
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./demo/screenshots/client_1.png" alt="2D Client 1" width="300%" /><br/>
+      Client 1
+    </td>
+    <td align="center">
+      <img src="./demo/screenshots/client_2.png" alt="2D Client 2" width="300%" /><br/>
+      Client 2
+    </td>
+    <td align="center">
+      <img src="./demo/screenshots/client_3.jpeg" alt="2D Client 3" width="300%"/><br/>
+      Client 3
+    </td>
+  </tr>
+</table>
+
+Code : [Demo-2D](./demo)
+
+---
+
+### 3D 100×100×100 Space Grid Example
+A 3D voxel grid rendered with React Three Fiber, showing real-time cell claiming.
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./grid-3d-demo/screenshots/client_1.png" alt="3D Client 1" width="250px"/><br/>
+      Client 1
+    </td>
+    <td align="center">
+      <img src="./grid-3d-demo/screenshots/client_2.jpeg" alt="3D Client 2" width="250px"/><br/>
+      Client 2
+    </td>
+    <td align="center">
+      <img src="./grid-3d-demo/screenshots/client_3.png" alt="3D Client 3" width="250px"/><br/>
+      Client 3
+    </td>
+  </tr>
+</table>
+
+Code : [Demo-3D](./grid-3d-demo)
+
 The Realtime Grid Engine is a Redis-backed, N-dimensional real-time coordination server with an accompanying JavaScript/TypeScript client library. It provides atomic cell claiming, deterministic conflict resolution, and WebSocket-based event distribution. The system is designed to operate independently from your main application logic and can be integrated into any application that needs reliable multi-user interaction on grid-like structures.
 
 This repository contains:
@@ -8,7 +56,6 @@ This repository contains:
 - The **Realtime Grid Client** (`realtime-grid-client` npm package)
 - Demos including a 2D reservation interface and a 3D sparse voxel visualization
 
----
 
 ## Motivation
 
@@ -23,7 +70,6 @@ This project was created after building a real-time theatre reservation system. 
 
 The **Realtime Grid Engine** solves these problems by providing a dedicated, isolated, high-performance real-time coordination service backed by Redis atomic operations and Pub/Sub. It lets your main backend remain simple while this system handles concurrency, claims, and updates.
 
----
 
 ## What This Solves
 
@@ -37,7 +83,6 @@ The **Realtime Grid Engine** solves these problems by providing a dedicated, iso
 
 The engine becomes the authoritative state holder for any grid-like structure you want to coordinate.
 
----
 
 ## N-Dimensional Grids
 
@@ -50,7 +95,6 @@ This system supports any number of dimensions. Examples:
 
 The server does not impose any meaning on the dimensions. They are purely structural and driven by your application's needs.
 
----
 
 ## Example Use Cases
 
@@ -92,7 +136,6 @@ The server does not impose any meaning on the dimensions. They are purely struct
 - High-resolution availability datasets
 - Multi-layered mapping and planning tools
 
----
 
 ## Example Integration with a Backend + Database + Payments
 
@@ -144,7 +187,6 @@ Below is a realistic example demonstrating how this system plugs into a full sta
 - Redis handles atomic operations efficiently
 - WebSockets are confined to a lightweight, specialized server
 
----
 
 ## Running the Server
 
@@ -208,7 +250,6 @@ Starts:
 - Redis at `localhost:6379`
 - API at `localhost:8080`
 
----
 
 ## Using the Client
 
@@ -239,7 +280,6 @@ await client.release([2, 3]);
 
 See `client/README.md` for full documentation.
 
----
 
 ## Project Structure
 
@@ -258,7 +298,6 @@ realtime-grid/
   README.md               # This file
 ```
 
----
 
 ## Database Integration (MySQL Example)
 
@@ -300,7 +339,6 @@ CREATE TABLE bookings (
 **The grid engine never stores business data.**  
 Your database holds all authoritative bookings.
 
----
 
 ## Why This Works Well
 
