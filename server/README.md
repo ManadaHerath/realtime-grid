@@ -241,7 +241,7 @@ import { createGridClient } from "realtime-grid-client";
 
 const baseUrl = "http://localhost:8080";
 
-// gridId is obtained by POST /grids or created by your backend
+// gridId is obtained by POST /grids or created by the backend (you can change the backend logic of the server as you like)
 const client = createGridClient({ baseUrl, gridId: "g_abc123..." });
 
 async function main() {

@@ -177,7 +177,6 @@ function App() {
       return;
     }
 
-    // else claim
     const value = `held:${userId}`;
     const result = await client.claim([x, y, z], value);
     if (!result.success) {

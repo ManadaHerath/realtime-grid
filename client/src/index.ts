@@ -37,7 +37,7 @@ export interface GridClient {
   disconnect(): void;
   isConnected(): boolean;
   claim(coord: Coord, value: any): Promise<ClaimResult>;
-  release(coord: Coord): Promise<ClaimResult>;           // NEW
+  release(coord: Coord): Promise<ClaimResult>;
   onCellUpdate(listener: (ev: CellUpdateEvent) => void): () => void;
 }
 

@@ -44,7 +44,7 @@ import { createGridClient } from "realtime-grid-client";
 // Initialize client
 const client = createGridClient({
   baseUrl: "http://localhost:8080",
-  gridId: "g_abc123"
+  gridId: "g_abc123" // gridId is obtained by POST /grids or created by the backend (you can change the backend logic of the server as you like)
 });
 
 // Fetch initial state
@@ -96,8 +96,8 @@ const client = createGridClient({ baseUrl: "http://localhost:8080", gridId });
 
 ```ts
 interface Options {
-  baseUrl: string;   // Server URL (e.g., "http://localhost:8080")
-  gridId: string;    // Grid identifier returned from POST /grids
+  baseUrl: string;
+  gridId: string;   // gridId is obtained by POST /grids or created by the backend (you can change the backend logic of the server as you like)
 }
 ```
 
