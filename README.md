@@ -11,7 +11,7 @@ This repository contains:
 ## Demo Screenshots
 
 ### 2D Real-Time Multi-Client Example
-Three clients interacting with the same 2D grid simultaneously.
+Three clients interaction showcase within a 2D grid created from the client library and server.
 
 <table align="center" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse;">
   <tr>
@@ -34,7 +34,8 @@ Code : [Demo-2D](./demo)
 
 
 ### 3D 100×100×100 Space Grid Example
-A 3D voxel grid rendered with React Three Fiber, showing real-time cell claiming.
+
+Three clients interaction showcase within a 3D grid created from the client library and server
 
 <table align="center" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse;">
   <tr>
